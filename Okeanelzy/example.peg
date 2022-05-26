@@ -2,5 +2,11 @@
 @classname MathExpressionParser
 @using System.Globalization
 
-number<string> 
-	= value:("" [0-9]+) { value }
+addition<int> 
+    = lhs:number _ '+' _ rhs:number
+        { lhs + rhs }
+
+number<int> 
+	= value:("" [0-9]+) { Int32.Parse(value) }
+
+_ = [ \t\r\n]*
