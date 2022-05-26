@@ -25,7 +25,7 @@ expression = lookup / addition / literal
 literal = poetic_literal
 
 poetic_literal<NumberNode> 
-    = 'like'i _ tokens:("" .*) { 
+    = 'like'i _ tokens:("" [A-Za-z0-9 ]+) { 
         new NumberNode(tokens) }
 
 lookup<SyntaxNode> 
@@ -56,5 +56,5 @@ EOL
     = '\n'
 
 EOF
-    = !.
+    = '\n'* !.
     / unexpected:. #error{ $"Unexpected character {unexpected}." }
