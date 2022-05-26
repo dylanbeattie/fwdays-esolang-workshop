@@ -1,4 +1,4 @@
-﻿@namespace OkeanElzy
+@namespace OkeanElzy
 @classname RockstarParser
 @using System.Globalization
 

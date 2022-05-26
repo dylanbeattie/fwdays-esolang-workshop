@@ -1,7 +1,10 @@
 ﻿var parser = new OkeanElzy.RockstarParser();
-var evaluator = new OkeanElzy.Evaluator();
+var evaluator = new OkeanElzy.Evaluator(Console.WriteLine);
 var program = File.ReadAllText("program.rock");
 var ast = parser.Parse(program);
 Console.WriteLine(ast);
+Console.WriteLine("============================");
 var result = evaluator.Evaluate(ast);
+Console.WriteLine("============================");
+Console.WriteLine("Result of program:");
 Console.WriteLine(result);

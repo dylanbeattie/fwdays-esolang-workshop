@@ -1,20 +1,21 @@
 using System.Text;
 
 public abstract class SyntaxNode {
+    public override string ToString() => this.ToString(0);
     public abstract string ToString(int depth = 0);
 }
 
 public class BlockNode: SyntaxNode {
-    public List<SyntaxNode> Statements { get; } = new List<SyntaxNode>();
+    public List<SyntaxNode> Statements { get; }
     public BlockNode(SyntaxNode node) {
-        this.Statements = new List<SyntaxNode> { node };
+        Statements = new List<SyntaxNode> { node };
     }
 
     public BlockNode Concat(BlockNode tail) {
         this.Statements.AddRange(tail.Statements);
         return this;
     }
-
+    
     public override string ToString(int depth = 0) {
         var sb = new StringBuilder();
         foreach(var s in this.Statements) sb.AppendLine(s.ToString(depth));
