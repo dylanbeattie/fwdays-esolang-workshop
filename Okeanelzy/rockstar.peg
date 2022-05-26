@@ -20,7 +20,7 @@ output<OutputNode>
 
 say = 'say'i/'scream'i/'whisper'i/'shout'i
 
-expression = lookup / addition / literal
+expression = addition / value
 
 literal = poetic_literal
 
@@ -37,15 +37,22 @@ variable
 common_variable<VariableNode>  
     = prefix:("" 'the'i / 'my'i / 'your'i) [\t ]+ id:("" [A-Za-z]+) { new VariableNode($"{prefix}_{id}".ToLower()) }    
 
+plus = '+' / 'with'i / 'plus'i;
+minus = '-' / 'without'i / 'minus'i
+times = '*' / 'of'i / 'times'i
+divide = '/' / 'over' / 'divided by'i
+
 addition<SyntaxNode> 
-    = lhs:multiplication _ '+' _ rhs:addition { new AdditionNode(lhs,rhs) }
-    / lhs:multiplication _ '-' _ rhs:addition { new SubtractionNode(lhs,rhs) }
+    = lhs:multiplication _ plus _ rhs:addition { new AdditionNode(lhs,rhs) }
+    / lhs:multiplication _ minus _ rhs:addition { new SubtractionNode(lhs,rhs) }
     / multiplication
 
 multiplication<SyntaxNode> 
-    = lhs:number _ '*' _ rhs:multiplication { new MultiplicationNode(lhs,rhs) }
-    / lhs:number _ '/' _ rhs:multiplication { new DivisionNode(lhs,rhs) }
-    / number
+    = lhs:value _ times _ rhs:multiplication { new MultiplicationNode(lhs,rhs) }
+    / lhs:value _ divide  _ rhs:multiplication { new DivisionNode(lhs,rhs) }
+    / value
+
+value<SyntaxNode> = lookup / number / literal
 
 number<NumberNode> 
 	= value:("" [0-9]+) { new NumberNode(decimal.Parse(value)) }

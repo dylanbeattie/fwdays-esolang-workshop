@@ -32,7 +32,7 @@ public class OutputNode : SyntaxNode {
     public override string ToString(int depth = 0) {
         var sb = new StringBuilder();
         sb.AppendLine(String.Empty.PadRight(depth * 2) + "output");
-        sb.AppendLine(Expression.ToString(depth+1));
+        sb.Append(Expression.ToString(depth+1));
         return sb.ToString();
     }
 }
@@ -60,7 +60,7 @@ public class AssignNode : SyntaxNode {
         var sb = new StringBuilder();
         sb.AppendLine(String.Empty.PadRight(depth * 2) + "assign:");
         sb.AppendLine(Variable.ToString(depth+1));
-        sb.AppendLine(Expression.ToString(depth+1));
+        sb.Append(Expression.ToString(depth+1));
         return sb.ToString();
     }
 }
@@ -74,7 +74,7 @@ public class LookupNode : SyntaxNode {
     public override string ToString(int depth = 0) {
         var sb = new StringBuilder();
         sb.AppendLine(String.Empty.PadRight(depth * 2) + "lookup:");
-        sb.AppendLine(Variable.ToString(depth+1));
+        sb.Append(Variable.ToString(depth+1));
         return sb.ToString();
     }
 }
