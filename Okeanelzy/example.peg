@@ -1,18 +1,26 @@
-﻿@namespace PegExamples
-@classname MathExpressionParser
+﻿@namespace OkeanElzy
+@classname RockstarParser
 @using System.Globalization
 
+start<SyntaxNode>
+    = _ value:addition _ EOF { value }
+
+
 addition<SyntaxNode> 
-    = lhs:multiplication _ '+' _ rhs:addition
-        { new AdditionNode(lhs,rhs) }
+    = lhs:multiplication _ '+' _ rhs:addition { new AdditionNode(lhs,rhs) }
+    / lhs:multiplication _ '-' _ rhs:addition { new SubtractionNode(lhs,rhs) }
     / multiplication
 
 multiplication<SyntaxNode> 
-    = lhs:number _ '*' _ rhs:multiplication
-        { new MultiplicationNode(lhs,rhs) }
+    = lhs:number _ '*' _ rhs:multiplication { new MultiplicationNode(lhs,rhs) }
+    / lhs:number _ '/' _ rhs:multiplication { new DivisionNode(lhs,rhs) }
     / number
 
 number<NumberNode> 
 	= value:("" [0-9]+) { new NumberNode(decimal.Parse(value)) }
 
 _ = [ \t\r\n]*
+
+EOF
+    = !.
+    / unexpected:. #error{ $"Unexpected character {unexpected}." }
