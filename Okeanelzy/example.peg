@@ -1,0 +1,6 @@
+﻿@namespace PegExamples
+@classname MathExpressionParser
+@using System.Globalization
+
+number<string> 
+	= value:("" [0-9]+) { value }
