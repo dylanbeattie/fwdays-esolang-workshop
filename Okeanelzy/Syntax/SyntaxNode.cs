@@ -4,6 +4,38 @@ public abstract class SyntaxNode {
     public abstract string ToString(int depth = 0);
 }
 
+public class BlockNode: SyntaxNode {
+    public List<SyntaxNode> Statements { get; } = new List<SyntaxNode>();
+    public BlockNode(SyntaxNode node) {
+        this.Statements = new List<SyntaxNode> { node };
+    }
+
+    public BlockNode Concat(BlockNode tail) {
+        this.Statements.AddRange(tail.Statements);
+        return this;
+    }
+
+    public override string ToString(int depth = 0) {
+        var sb = new StringBuilder();
+        foreach(var s in this.Statements) sb.AppendLine(s.ToString(depth));
+        return sb.ToString();
+    }
+}
+
+public class OutputNode : SyntaxNode {
+    public SyntaxNode Expression { get; }
+    public OutputNode(SyntaxNode expression) {
+        this.Expression = expression;
+    }
+
+    public override string ToString(int depth = 0) {
+        var sb = new StringBuilder();
+        sb.AppendLine(String.Empty.PadRight(depth * 2) + "output");
+        sb.AppendLine(Expression.ToString(depth+1));
+        return sb.ToString();
+    }
+}
+
 public abstract class BinaryNode : SyntaxNode {
 
     public BinaryNode(SyntaxNode lhs, SyntaxNode rhs, Operator op) {

@@ -2,9 +2,19 @@
 @classname RockstarParser
 @using System.Globalization
 
-start<SyntaxNode>
-    = _ value:addition _ EOF { value }
+program<SyntaxNode> = p:list EOF { p }
 
+list<BlockNode>
+    = head:statement EOL tail:list { new BlockNode(head).Concat(tail) }
+    / line:statement { new BlockNode(line) }
+
+statement<SyntaxNode> = output
+
+output<OutputNode> = say _ e:expression { new OutputNode(e) }
+
+say = 'say'i/'scream'i/'whisper'i/'shout'i
+
+expression = addition
 
 addition<SyntaxNode> 
     = lhs:multiplication _ '+' _ rhs:addition { new AdditionNode(lhs,rhs) }
@@ -19,7 +29,10 @@ multiplication<SyntaxNode>
 number<NumberNode> 
 	= value:("" [0-9]+) { new NumberNode(decimal.Parse(value)) }
 
-_ = [ \t\r\n]*
+_ = [ \t]*
+
+EOL 
+    = '\n'
 
 EOF
     = !.

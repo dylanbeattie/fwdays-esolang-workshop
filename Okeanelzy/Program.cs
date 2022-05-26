@@ -1,6 +1,6 @@
 ﻿var parser = new OkeanElzy.RockstarParser();
 var evaluator = new OkeanElzy.Evaluator();
-var program = @"4/2+8/4+10/5";
+var program = File.ReadAllText("program.rock");
 var ast = parser.Parse(program);
 Console.WriteLine(ast);
 var result = evaluator.Evaluate(ast);

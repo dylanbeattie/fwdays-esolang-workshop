@@ -12,6 +12,12 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<PegGrammar Include="example.peg" />
+		<PegGrammar Include="rockstar.peg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="program.rock">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
