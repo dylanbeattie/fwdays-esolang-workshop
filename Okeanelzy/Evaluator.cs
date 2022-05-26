@@ -1,6 +1,7 @@
 namespace OkeanElzy;
 
 public class Evaluator {
+    private Dictionary<string, object> variables = new();
     private Action<object> stdout;
 
     public Evaluator(Action<object> output) {
@@ -12,8 +13,25 @@ public class Evaluator {
         BinaryNode b => Binary(b),
         BlockNode b => Block(b),
         OutputNode n => Output(n),
+        AssignNode a => Assign(a),
+        LookupNode l => LookupVariable(l),
         _ => throw new Exception($"Unrecognized node type {node.GetType()}")
     };
+
+    private object LookupVariable(LookupNode l) {
+        var name = l.Variable.Name;
+        if (variables.TryGetValue(name, out var result)) return result;
+        throw new Exception($"Unknown variable {name}");
+    }
+
+    private object Assign(AssignNode a) {
+        var name = a.Variable.Name;
+        var value = Evaluate(a.Expression);
+        variables[name] = value;
+        return value;
+    }
+
+
 
     public object Block(BlockNode b) {
         object? result = null;
