@@ -2,11 +2,17 @@
 @classname MathExpressionParser
 @using System.Globalization
 
-addition<int> 
-    = lhs:number _ '+' _ rhs:number
-        { lhs + rhs }
+addition<SyntaxNode> 
+    = lhs:multiplication _ '+' _ rhs:addition
+        { new AdditionNode(lhs,rhs) }
+    / multiplication
 
-number<int> 
-	= value:("" [0-9]+) { Int32.Parse(value) }
+multiplication<SyntaxNode> 
+    = lhs:number _ '*' _ rhs:multiplication
+        { new MultiplicationNode(lhs,rhs) }
+    / number
+
+number<NumberNode> 
+	= value:("" [0-9]+) { new NumberNode(decimal.Parse(value)) }
 
 _ = [ \t\r\n]*
