@@ -1,4 +1,4 @@
-@namespace OkeanElzy
+﻿@namespace OkeanElzy
 @classname RockstarParser
 @using System.Globalization
 
@@ -8,13 +8,34 @@ list<BlockNode>
     = head:statement EOL tail:list { new BlockNode(head).Concat(tail) }
     / line:statement { new BlockNode(line) }
 
-statement<SyntaxNode> = output
+statement<SyntaxNode> 
+    = output 
+    / assign
 
-output<OutputNode> = say _ e:expression { new OutputNode(e) }
+assign<AssignNode> 
+    = v:variable _ ('is'i/'was'i) _ e:expression { new AssignNode(v, e) }
+
+output<OutputNode> 
+    = say _ e:expression { new OutputNode(e) }
 
 say = 'say'i/'scream'i/'whisper'i/'shout'i
 
-expression = addition
+expression = lookup / addition / literal
+
+literal = poetic_literal
+
+poetic_literal<NumberNode> 
+    = 'like'i _ tokens:("" .*) { 
+        new NumberNode(tokens) }
+
+lookup<SyntaxNode> 
+    = v:variable { new LookupNode(v) }
+
+variable
+    = common_variable
+
+common_variable<VariableNode>  
+    = prefix:("" 'the'i / 'my'i / 'your'i) [\t ]+ id:("" [A-Za-z]+) { new VariableNode($"{prefix}_{id}".ToLower()) }    
 
 addition<SyntaxNode> 
     = lhs:multiplication _ '+' _ rhs:addition { new AdditionNode(lhs,rhs) }

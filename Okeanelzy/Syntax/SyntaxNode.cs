@@ -37,6 +37,48 @@ public class OutputNode : SyntaxNode {
     }
 }
 
+public class VariableNode : SyntaxNode {
+    public string Name { get; }
+    public VariableNode(string name) {
+        this.Name = name;
+    }
+
+    public override string ToString(int depth = 0) {
+        return String.Empty.PadRight(depth * 2) + "variable: " + this.Name;
+    }
+}
+public class AssignNode : SyntaxNode {
+    public VariableNode Variable { get; }
+    public SyntaxNode Expression { get; }
+
+    public AssignNode(VariableNode v, SyntaxNode e) {
+        this.Variable = v;
+        this.Expression = e;
+    }
+
+    public override string ToString(int depth = 0) {
+        var sb = new StringBuilder();
+        sb.AppendLine(String.Empty.PadRight(depth * 2) + "assign:");
+        sb.AppendLine(Variable.ToString(depth+1));
+        sb.AppendLine(Expression.ToString(depth+1));
+        return sb.ToString();
+    }
+}
+
+public class LookupNode : SyntaxNode { 
+    public VariableNode Variable { get; }
+    public LookupNode(VariableNode v) {
+        this.Variable = v;
+    }
+    
+    public override string ToString(int depth = 0) {
+        var sb = new StringBuilder();
+        sb.AppendLine(String.Empty.PadRight(depth * 2) + "lookup:");
+        sb.AppendLine(Variable.ToString(depth+1));
+        return sb.ToString();
+    }
+}
+
 public abstract class BinaryNode : SyntaxNode {
 
     public BinaryNode(SyntaxNode lhs, SyntaxNode rhs, Operator op) {
@@ -85,6 +127,13 @@ public class NumberNode : SyntaxNode {
     public decimal Value { get; } = 0.0m;
     public NumberNode(decimal value) {
         this.Value = value;
+    }
+
+    public NumberNode(string poeticLiteralTokens) {
+        var digits = String.Join("", poeticLiteralTokens
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)  
+            .Select(token => token.Length % 10));
+        this.Value = decimal.Parse(digits);
     }
 
     public override string ToString(int depth = 0) => $"{String.Empty.PadRight(depth * 2)}number: {Value}";
